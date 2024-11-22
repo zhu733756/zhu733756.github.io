@@ -1,0 +1,107 @@
+baseURL = "https://zhu733756.github.io/"
+title = "zhu733756的博客"
+theme = "PaperMod"
+paginate = 6
+copyright = "©2024-2024 zhu733756. All rights reserved."
+defaultContentLanguage = "zh"
+enableRobotsTXT = true
+buildDrafts = true
+
+[taxonomies]
+tag = "tags"
+category = "categories"
+series = "series"
+
+[params]
+env = "production"
+description = "zhu733756 | 学习、分享, 专注于云原生数据库领域"
+author = "zhu733756"
+keywords = ["blog", "cloud native", "docker","kubernetes", "coding"]
+ShowShareButtons = true
+ShowReadingTime = true
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowWordCount = true
+ShowRssButtonInSectionTermList = true
+showtoc = true
+math = true
+comments = true
+
+[params.assets]
+favicon = "/img/favicon/96x96.png"
+favicon16x16 = "/img/favicon/16x16.png"
+favicon32x32 = "/img/favicon/32x32.png"
+
+[params.editPost]
+URL = "https://github.com/zhu733756/zhu733756.github.io/blob/master/content"
+Text = "阅读原文"
+appendFilePath = true
+
+[params.profileMode]
+enabled = true
+title = "Zhu733756 的博客"
+subtitle = "云原生数据库踩坑实战"
+imageUrl = "/img/profile.jpeg"
+imageTitle = "This is me"
+
+[[params.profileMode.buttons]]
+name = "我的帖子"
+url = "/posts/"
+
+[[params.profileMode.buttons]]
+name = "系列文章"
+url = "/series/"
+
+[[params.socialIcons]]
+name = "github"
+title = "Github Account"
+url = "https://github.com/zhu733756"
+
+[[params.socialIcons]]
+name = "email"
+title = "Email Me"
+url = "mailto:qq1079333812@gmail.com"
+
+[[menu.main]]
+identifier = "categories"
+name = "分类"
+url = "/categories/"
+weight = 5
+
+[[menu.main]]
+identifier = "tags"
+name = "标签"
+url = "/tags/"
+weight = 10
+
+[[menu.main]]
+identifier = "archives"
+name = "归档"
+url = "/archives/"
+weight = 15
+
+[[menu.main]]
+identifier = "search"
+name = "搜索"
+url = "/search/"
+weight = 20
+
+[[menu.main]]
+identifier = "github"
+name = "Github Repo"
+url = "https://github.com/zhu733756/zhu733756.github.io"
+weight = 25
+
+[outputs]
+home = ['HTML', 'RSS', 'JSON']
+
+[markup.highlight]
+noClasses = false
+
+[markup.goldmark.extensions.passthrough]
+enable = true
+
+[markup.goldmark.extensions.passthrough.delimiters]
+block = [['\[', '\]'], ['$$', '$$']]
+inline = [['\(', '\)'], ['$', '$']]
