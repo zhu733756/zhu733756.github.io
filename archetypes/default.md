@@ -4,5 +4,4 @@ tags : []
 categories : []
 series : []
 date: {{ .Date }}
-draft: true
 ---

@@ -1,10 +1,10 @@
 ---
-title: 'MongoDB 高可用架构: 副本(ReplicaSet)/分片(Sharding)集群是什么回事'
-date: 2024-11-22T18:42:29+08:00
-tags: ['MongoDB', '高可用架构']
-categories: ["数据库", '理论']
-series: ["MongoDB 知识汇总"]
-author: ['zhu733756']
+title: "MongoDB 高可用架构: 副本(ReplicaSet)/分片(Sharding)集群是什么回事"
+date: 2024-11-22T17:00:29+08:00
+tags: ["MongoDB", "高可用架构"]
+categories: ["数据库", "理论"]
+series: ["MongoDB 知识汇总"]                    
+author: ["zhu733756"]
 ---
 
 # MongoDB 高可用架构: 副本(ReplicaSet)/分片(Sharding)集群是什么回事?
