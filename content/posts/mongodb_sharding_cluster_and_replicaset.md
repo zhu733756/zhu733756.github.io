@@ -7,8 +7,6 @@ series: ["MongoDB 知识汇总"]
 author: ["zhu733756"]
 ---
 
-# MongoDB 高可用架构: 副本(ReplicaSet)/分片(Sharding)集群是什么回事?
-
 ## 前戏
 
 > **小白**：嗨，老花，我听说 MongoDB 挺火的，但我对它不是很了解。你能给我讲讲 MongoDB 是啥，它和 MySQL 这样的 SQL 数据库有啥不同吗？
