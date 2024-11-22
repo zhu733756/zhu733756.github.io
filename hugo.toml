@@ -1,7 +1,6 @@
 baseURL = "https://zhu733756.github.io/"
 title = "zhu733756的博客"
 theme = "PaperMod"
-paginate = 6
 copyright = "©2024-2024 zhu733756. All rights reserved."
 defaultContentLanguage = "zh"
 enableRobotsTXT = true

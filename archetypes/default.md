@@ -6,4 +6,3 @@ series : []
 date: {{ .Date }}
 draft: true
 ---
-
