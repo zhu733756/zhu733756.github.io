@@ -39,10 +39,10 @@ appendFilePath = true
 
 [params.profileMode]
 enabled = true
-title = "Zhu733756 的博客"
+title = "zhu733756的博客"
 subtitle = "云原生数据库踩坑实战"
 imageUrl = "/img/profile.jpeg"
-imageTitle = "This is me"
+imageTitle = "coding"
 
 [[params.profileMode.buttons]]
 name = "我的帖子"
