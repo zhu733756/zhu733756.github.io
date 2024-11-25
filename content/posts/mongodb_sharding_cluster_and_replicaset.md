@@ -143,7 +143,7 @@ mongos> db.runCommand( { enablesharding : "test" } )
 mongos> use test
 mongos> db.vast.ensureIndex( { id: 1 } )
 mongos> use admin
-mongos> db.runCommand( {shardcollecteion: "test.vast", key : {id: 1} } )
+mongos> db.adminCommand( {shardCollection: "test.vast", key : {id: 1} } )
 mongos> use test
 mongos> for(i=0;i<20000;i++){ db.vast.insert({"id":i,"name":"woshishuaige","age":i,"date":new Date()}); }
 mongos> db.vast.stats()
