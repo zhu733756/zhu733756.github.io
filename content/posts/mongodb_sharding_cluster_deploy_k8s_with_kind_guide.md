@@ -1,6 +1,6 @@
 ---
 title: 'MongoDB分片集群在k8s上的部署实战(一)'
-date: 2024-11-27T19:21:37+08:00
+date: 2024-11-27T1:21:37+08:00
 tags: ['MongoDB', '分片集群', 'kind']
 categories: ['数据库', '实战', 'k8s']
 series: ['MongoDB 知识汇总']
@@ -223,7 +223,31 @@ kube-proxy-9c2km                                        1/1     Running   8 (59m
 kube-scheduler-mongodb-sharded-control-plane            1/1     Running   1 (58m ago)   71m
 ```
 
+虽然, 我们现在可以看到`k8s`生态所需要的`pod`了, 执行`docker ps`发现这些`pod`
+运行在`kind`的镜像中, kind其实就是`k8s in docker`的缩写啦~
+
+```bash
+docker ps
+CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                                                 NAMES
+d75686260f85   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes                                                         mongodb-sharded-worker3
+8627b5cd41f9   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes   0.0.0.0:31000->31000/tcp, 127.0.0.1:38823->6443/tcp   mongodb-sharded-control-plane
+b0a00cb36381   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes                                                         mongodb-sharded-worker
+aff9e82d00be   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes                                                         mongodb-sharded-worker2
+```
+
+> 小白: `kubectl cluster-info --context kind-mongodb-sharded` 这个命令, 又是什么意思?
+
+老花: 这个其实就是`kubectl`这个客户端利用`/root/.kube/config`这个默认的`kubeconfig`来执行集群上下文切换, 方便管理多个集群啦~ 你也可以使用`--kubeconfig` 来指定其他路径的配置文件进行操作! 其实, 这个配置文件还是挺重要的, 提供了访问远程`k8s`的方法, 不管是写测试代码还是本地调试, 都需要用到它!
+
 ## 后记
+
+### 常见`Kind`命令汇总
+
+- kind create cluster --config cluster.yaml --name mongodb-sharded --image kindest/node:v1.25.3 # 创建集群
+- kind get clusters # 获取集群
+- kind delete clusters mongodb-sharded # 删除集群
+- kind load docker-image  docker.io/bitnami/mongodb-sharded:8.0.3-debian-12-r0 --name mongodb-sharded # 向kind集群中导入镜像
+- kubectl cluster-info --context kind-mongodb-sharded # 切换到kind创建的集群
 
 > 小白: 经过几个小时的来回折腾, 咱们终于用上`Kind`创建的集群了~ 
 
