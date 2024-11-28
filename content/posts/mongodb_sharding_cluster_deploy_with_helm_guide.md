@@ -13,9 +13,11 @@ author: ['zhu733756']
 
 老花：当然可以，小白！我们先从 Helm 的安装开始，然后详细介绍 Helm 中的每个角色配置，最后解释 Helm 应用是如何运行起来的。
 
+## helm 简介
+
 ### 安装 helm
 
-老花：Helm 是 Kubernetes 的包管理器，它帮助我们管理 Kubernetes 应用。安装 Helm 的步骤如下：
+老花：`Helm` 是 `Kubernetes` 的包管理器，它帮助我们管理 `Kubernetes` 应用。安装 `Helm` 的步骤如下：
 
 1. 下载 Helm：访问 Helm 的[官方 GitHub 页面](https://github.com/helm/helm/releases)，下载最新版本的 Helm。
 2. 解压并移动 Helm 到你的 PATH 中：
@@ -32,7 +34,7 @@ author: ['zhu733756']
    helm version
    ```
 
-老花：Helm 也安装好了，我们可以开始部署 MongoDB Sharded 集群了。再安装之前, 我们先了解 Helm 的基本命令。
+老花：`Helm`也安装好了，我们可以开始部署 `MongoDB Sharded` 集群了。再安装之前, 我们先了解 `Helm` 的基本命令。
 
 ### Helm 常见命令汇总
 
@@ -66,11 +68,13 @@ author: ['zhu733756']
 2. **Mongos**：路由器，负责处理客户端请求并路由到正确的分片。
 3. **Shard**：数据分片，负责存储实际的数据。
 
-我们将使用 Bitnami 的 MongoDB Sharded Helm Chart 来部署这些角色。
+我们将使用 `Bitnami` 的 `MongoDB Sharded Helm Chart` 来部署这些角色。
 
-### 部署 MongoDB Sharded 集群
+## 部署 MongoDB Sharded 集群
 
-首先，我们需要添加 Bitnami 的 Helm 仓库：
+## 添加 Helm 仓库
+
+首先，我们需要添加 `Bitnami` 的 Helm 仓库：
 
 ```bash
 helm repo add stable https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
@@ -149,13 +153,13 @@ mongodb-sharded-shard1-data-1            1/1     Running   0          4m36s
 mongodb-sharded-shard1-data-2            1/1     Running   0          3m59s
 ```
 
-确保所有的 Pods 都处于 Running 状态。
+确保所有的 `Pods` 都处于 Running 状态。
 
 ### 测试集群
 
 > 小白：我怎么测试集群是否正常工作？
 
-老花：你可以通过连接到 Mongos Pod 来测试集群：
+老花：你可以通过连接到 `Mongos Pod` 来测试集群：
 
 ```bash
  kubectl exec -it mongodb-sharded-mongos-9cffc5c76-k7ps2  -n mongodb-sharded bash --  mongosh admin -u root -p 123456
@@ -168,7 +172,7 @@ mongosh 2.3.4 is available for download: https://www.mongodb.com/try/download/sh
 For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
 ```
 
-然后，你可以执行一些基本的 MongoDB 命令来测试集群，比如创建数据库、插入数据等：
+然后，你可以执行一些基本的 `MongoDB` 命令来测试集群，比如创建数据库、插入数据等：
 
 ```javascript
 use testdb
@@ -240,6 +244,8 @@ testdb> db.stats()
 当然了, 你可以使用[上一篇博客](https://zhu733756.github.io/posts/mongodb_sharding_cluster_deploy_on_docker_guide/#%E7%AC%AC%E4%B8%83%E6%AD%A5%E5%90%AF%E7%94%A8%E5%88%86%E7%89%87%E5%B9%B6%E8%AE%BE%E7%BD%AE%E5%88%86%E7%89%87%E9%94%AE)中的命令去验证啦~
 
 ## 后记
+
+### 一些云原生应用的配套生产套件
 
 > 小白：老花，我还有一个问题。如果我想在生产环境中部署 `MongoDB` 分片集群，有什么特别的注意事项吗？
 
