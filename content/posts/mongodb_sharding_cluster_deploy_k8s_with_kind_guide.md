@@ -193,7 +193,7 @@ kubeadmConfigPatches:
 其他配置: 参考[官方文档](https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/)
 
 ```bash
-kind create cluster --config cluster.yaml --name mongodb-sharded --image kindest/node:v1.25.3
+> kind create cluster --config cluster.yaml --name mongodb-sharded --image kindest/node:v1.25.3
 Creating cluster "mongodb-sharded" ...
  ✓ Ensuring node image (kindest/node:v1.25.3) 🖼
  ✓ Preparing nodes 📦 📦
@@ -224,10 +224,10 @@ kube-scheduler-mongodb-sharded-control-plane            1/1     Running   1 (58m
 ```
 
 虽然, 我们现在可以看到`k8s`生态所需要的`pod`了, 执行`docker ps`发现这些`pod`
-运行在`kind`的镜像中, kind其实就是`k8s in docker`的缩写啦~
+运行在`kind`的镜像中, `kind`其实就是`k8s in docker`的缩写啦~
 
 ```bash
-docker ps
+> docker ps
 CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS          PORTS                                                 NAMES
 d75686260f85   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes                                                         mongodb-sharded-worker3
 8627b5cd41f9   kindest/node:v1.25.3   "/usr/local/bin/entr…"   13 minutes ago   Up 13 minutes   0.0.0.0:31000->31000/tcp, 127.0.0.1:38823->6443/tcp   mongodb-sharded-control-plane
