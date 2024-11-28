@@ -111,7 +111,7 @@ APP VERSION: 8.0.3
 - `shardsvr.dataNode.replicaCount`：设置每个数据节点角色的副本数量。
 - `configsvr.replicaCount`：设置配置服务器的副本数量。
 - `mongos.replicaCount`：设置路由器的副本数量。
-- `auth.rootPassword`: 设置
+- `auth.rootPassword`: 由于验证是默认开启的, 这里必须设置密码, 管理员账号是`root`。
 - 更多参数参考这里[values.yaml](https://github.com/bitnami/charts/blob/main/bitnami/mongodb-sharded/values.yaml)
 
 ### Helm 应用是如何运行起来的
