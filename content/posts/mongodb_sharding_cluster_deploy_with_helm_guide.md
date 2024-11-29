@@ -72,7 +72,7 @@ author: ['zhu733756']
 
 ## 部署 MongoDB Sharded 集群
 
-## 添加 Helm 仓库
+### 添加 Helm 仓库
 
 首先，我们需要添加 `Bitnami` 的 Helm 仓库：
 
