@@ -1,7 +1,7 @@
 ---
-title: '实战 | 用golang撸一个极简MongoDB测试客户端? '
+title: '实战|用golang撸一个极简MongoDB测试客户端?'
 tags: ['MongoDB', '分片集群', 'mclient']
-categories: ['数据库', '实战', 'golang', 'demo"]
+categories: ['数据库', '实战', 'golang', 'demo']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']
 date: 2024-11-29T20:40:12+08:00
