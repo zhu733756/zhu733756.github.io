@@ -1,6 +1,6 @@
 ---
-title: '实战|用golang撸一个极简MongoDB测试客户端?'
-tags: ['MongoDB', '分片集群', 'mclient']
+title: '实战 | 用golang撸一个极简MongoDB测试客户端?'
+tags: ['MongoDB', '分片集群', 'mclient', '客户端']
 categories: ['数据库', '实战', 'golang', 'demo']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']
@@ -103,7 +103,7 @@ func createRandomUser(client *mongo.Client) {
 
 ### 插入随机数据
 
-```
+```go
 func insertRandomDocuments(client *mongo.Client, num int) {
 	collection := client.Database("testdb").Collection("testdata")
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
@@ -111,7 +111,7 @@ func insertRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	result, err := collection.InsertMany(ctx, documents)
@@ -124,7 +124,7 @@ func insertRandomDocuments(client *mongo.Client, num int) {
 
 ### 读取和删除数据
 
-```
+```go
 func insertAndReadRandomDocuments(client *mongo.Client, num int) {
 	collection := client.Database("testdb").Collection("testdata")
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
@@ -132,7 +132,7 @@ func insertAndReadRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	result, err := collection.InsertMany(ctx, documents)
@@ -170,7 +170,7 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	result, err := collection.InsertMany(ctx, documents)
@@ -178,7 +178,7 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 		log.Fatalf("Failed to insert documents: %v", err)
 	}
 
-	filter := bson.M{"name": bson.M{"$in": []string{"Kimi0"}}}
+	filter := bson.M{"name": bson.M{"$in": []string{"hahahaa0"}}}
 
 	deleteResult, err := collection.DeleteMany(ctx, filter)
 	if err != nil {
@@ -190,7 +190,7 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 
 ### 完整代码
 
-```
+```go
 package main
 
 import (
@@ -294,7 +294,7 @@ func insertRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	_, err := collection.InsertMany(ctx, documents)
@@ -311,7 +311,7 @@ func insertAndReadRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	_, err := collection.InsertMany(ctx, documents)
@@ -349,7 +349,7 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 
 	var documents []interface{}
 	for i := 0; i < num; i++ {
-		documents = append(documents, bson.M{"name": fmt.Sprintf("Kimi%d", i), "age": rand.Intn(100)})
+		documents = append(documents, bson.M{"name": fmt.Sprintf("hahahaa%d", i), "age": rand.Intn(100)})
 	}
 
 	_, err := collection.InsertMany(ctx, documents)
@@ -357,7 +357,7 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 		log.Fatalf("Failed to insert documents: %v", err)
 	}
 
-	filter := bson.M{"name": bson.M{"$in": []string{"Kimi0"}}}
+	filter := bson.M{"name": bson.M{"$in": []string{"hahahaa0"}}}
 
 	deleteResult, err := collection.DeleteMany(ctx, filter)
 	if err != nil {
@@ -371,19 +371,19 @@ func insertAndRemoveRandomDocuments(client *mongo.Client, num int) {
 
 ### 编译命令
 
-- 编译单个文件：`go build -o myapp myapp.go`[^12^]。
-- 编译模块：`go build -mod=readonly -o myapp ./...`[^12^]。
-- 编译交叉平台：`GOOS=windows GOARCH=amd64 go build -o myapp_windows_amd64 myapp.go`[^12^]。
+- 编译单个文件：`go build -o myapp myapp.go`。
+- 编译模块：`go build -mod=readonly -o myapp ./...`。
+- 编译交叉平台：`GOOS=windows GOARCH=amd64 go build -o myapp_windows_amd64 myapp.go`。
 
 ### 编译优化
 
-- 优化代码：避免不必要的包依赖，使用 Go 的性能分析工具（如 pprof），优化数据结构和算法[^12^]。
-- 优化编译选项：使用`-gcflags="all=-N -l"`禁用垃圾回收和内联优化，使用`-buildmode=pie`生成位置无关可执行文件[^12^]。
-- 优化构建工具：使用 Makefile 或构建系统（如 Bazel、Maven）自动化编译过程，使用并行编译提高编译速度[^12^]。
+- 优化代码：避免不必要的包依赖，使用 Go 的性能分析工具（如 pprof），优化数据结构和算法。
+- 优化编译选项：使用`-gcflags="all=-N -l"`禁用垃圾回收和内联优化，使用`-buildmode=pie`生成位置无关可执行文件。
+- 优化构建工具：使用 Makefile 或构建系统（如 Bazel、Maven）自动化编译过程，使用并行编译提高编译速度。
 
 ## 测试效果
 
-使用上一篇博客部署的集群测试, 拿到`mongos`的`ip`: `10.244.2.2`:
+使用[上一篇博客](https://zhu733756.github.io/posts/mongodb_sharding_cluster_deploy_with_helm_guide/)部署的集群测试, 拿到`mongos`的`ip`: `10.244.2.2`:
 
 ```bash
 $ kubectl get po -owide -n mongodb-sharded
@@ -415,8 +415,10 @@ d75686260f85   kindest/node:v1.25.3   "/usr/local/bin/entr…"   36 hours ago   
 8627b5cd41f9   kindest/node:v1.25.3   "/usr/local/bin/entr…"   36 hours ago   Up 36 hours   0.0.0.0:31000->31000/tcp, 127.0.0.1:38823->6443/tcp   mongodb-sharded-control-plane
 b0a00cb36381   kindest/node:v1.25.3   "/usr/local/bin/entr…"   36 hours ago   Up 36 hours                                                         mongodb-sharded-worker
 aff9e82d00be   kindest/node:v1.25.3   "/usr/local/bin/entr…"   36 hours ago   Up 36 hours                                                         mongodb-sharded-worker2
+
 $ docker cp mclient d75686260f85:mclient
 Successfully copied 12.1MB to d75686260f85:mclient
+
 $ docker exec -it d75686260f85 bash
 $ chmod a+x mclient
 $./mclient --help
@@ -455,7 +457,7 @@ Inserted 1 documents with IDs: [ObjectID("6749bc5feef8327a8288b504")]
 ```bash
 $./mclient --uri mongodb://root:123456@10.244.2.2:27017/admin --read
 Connected to MongoDB cluster successfully!
-Documents read from database: [map[_id:ObjectID("6749bc5feef8327a8288b504") age:60 name:Kimi0] map[_id:ObjectID("6749bc66080d166723679c56") age:10 name:Kimi0]]
+Documents read from database: [map[_id:ObjectID("6749bc5feef8327a8288b504") age:60 name:hahahaa0] map[_id:ObjectID("6749bc66080d166723679c56") age:10 name:hahahaa0]]
 ```
 
 ### 删除测试
@@ -476,9 +478,9 @@ User created with username: user5888017645476970789 and password: password670871
 
 ## 后记
 
-> 小白：真是总有刁民`gank`~
+> 小白：真是总有刁民`gank`朕~这下可帮我解决了大麻烦
 
-老花：哈哈, 平常心就好~
+老花：哈哈, 平常心就好~文中只是一个`demo`, 可以按需修改哦~
 
 > 小白：下一期我们继续分享数据库生态哪些内容?
 
