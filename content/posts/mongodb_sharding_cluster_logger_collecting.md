@@ -1,6 +1,6 @@
 ---
-title: 'Loki Stack收集MongoDB日志最佳实践'
-tags: ['MongoDB', '分片集群', 'kind', 'helm']
+title: 'Loki Stack收集MongoDB日志最佳实践(上)'
+tags: ['MongoDB', '分片集群', 'kind', 'helm', 'loki', 'fluent bit']
 categories: ['数据库', '日志管理', '实战', 'k8s']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']
@@ -233,8 +233,6 @@ $ kubectl get  secret loki-grafana  -n loki -ojson | jq -r '.data."admin-passwor
 然后我们就可以登录`grafana`页面了~
 
 添加`datasource`:`http://loki:3100`, 点击`explore`就可以查询了:
-
-
 
 ## 小尾巴
 
