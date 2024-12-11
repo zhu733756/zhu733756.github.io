@@ -1,6 +1,6 @@
 ---
 title: 'Loki Stack收集MongoDB日志最佳实践(上)'
-tags: ['MongoDB', '分片集群', 'kind', 'helm', 'loki', 'fluent bit']
+tags: ['MongoDB', '分片集群', 'kind', 'helm', 'loki', 'fluentbit']
 categories: ['数据库', '日志管理', '实战', 'k8s']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']

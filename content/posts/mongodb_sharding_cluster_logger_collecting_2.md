@@ -1,6 +1,6 @@
 ---
 title: 'Loki Stack收集MongoDB日志最佳实践(下)'
-tags: ['MongoDB', '分片集群', 'kind', 'helm', 'loki', 'fluent bit']
+tags: ['MongoDB', '分片集群', 'kind', 'helm', 'loki', 'fluentbit']
 categories: ['数据库', '日志管理', '实战', 'k8s']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']
@@ -132,7 +132,7 @@ $ helm upgrade --install loki grafana/loki-distributed --set ingester.replicas=3
 由于`grafana`不在`chart`中, 需要单独安装:
 
 ```bash
-$ helm upgrade --install loki grafana/grafana --set image.tag="10.3.3" --create-namespace --namespace=loki
+$ helm upgrade --install loki-grafana grafana/grafana --set image.tag="10.3.3" --create-namespace --namespace=loki
 $ helm list -n loki
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 fluent-bit      loki            2               2024-12-06 16:53:19.517610466 +0800 CST deployed        fluent-bit-2.6.0        v2.1.0
