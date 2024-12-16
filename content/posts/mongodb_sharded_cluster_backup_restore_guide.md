@@ -56,7 +56,7 @@ date: 2024-12-13T17:45:36+08:00
 
 #### 全量备份
 
-全量备份有两个思路, 挨个`db`进行备份, 或者通过`--oplog`来可以顺带做`oplog`日志的备份。
+全量备份有两个思路, 挨个`db`进行备份, 或者通过`--oplog`来做日志全量备份。
 
 #### 增量备份
 
@@ -68,7 +68,7 @@ date: 2024-12-13T17:45:36+08:00
 
 #### 全量恢复
 
-全量恢复有两个思路, 挨个`db`进行恢复, 或者通过`--oplogReplay`来可以顺带做`oplog`日志的备份。
+挨个`db`进行恢复。
 
 #### 增量恢复
 
@@ -235,6 +235,7 @@ DeprecationWarning: Collection.insert() is deprecated. Use insertOne, insertMany
 ```
 
 我们现在增量备份这条数据:
+
 ```bash
 $ rm -rf /tmp/*
 $ mongodump   -u root   -p 123456   --host mongodb-sharded-shard0-data-0.mongodb-sharded-headless.mongodb-sharded.svc.cluster.local:27017   --authenticationDatabase admin   -d local   -c "oplog.rs"   --query '{"ts": {"$gte":{"$timestamp":{"t":1734090347,"i":1}}}}'   --out /tmp/
@@ -242,9 +243,51 @@ $ mongodump   -u root   -p 123456   --host mongodb-sharded-shard0-data-0.mongodb
 2024-12-13T11:33:58.044+0000    done dumping local.oplog.rs (1 document)
 ```
 
-如何获取oplog的起始时间:
+删除数据:
+
 ```bash
-rs.printReplicationInfo()
+mongodb-sharded-shard-0 [direct: primary] test4> show collections
+vast
+mongodb-sharded-shard-0 [direct: primary] test4> db.vast.find()
+[ { _id: ObjectId('675c1ca3c202015ec9fe6911'), dd: 1 } ]
+mongodb-sharded-shard-0 [direct: primary] test4> db.vast.drop()
+true
+mongodb-sharded-shard-0 [direct: primary] test4> db.vast.find()
+```
+
+查看bson数据是否存在:
+```bash
+$ bsondump /tmp/local/oplog.rs.bson  |grep test4
+{"op":"c","ns":"test4.$cmd","ui":{"$binary":{"base64":"2sMxOnWpS/6Rfw83Wx38ZQ==","subType":"04"}},"o":{"create":"vast","idIndex":{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}},"ts":{"$timestamp":{"t":1734322701,"i":1}},"t":{"$numberLong":"43"},"v":{"$numberLong":"2"},"wall":{"$date":{"$numberLong":"1734322701336"}}}
+{"lsid":{"id":{"$binary":{"base64":"ZLbOqlbiTBKueJWWp1t+vQ==","subType":"04"}},"uid":{"$binary":{"base64":"Y5mrDaxi8gv8RmdTsQ+1j7fmkr7JUsabhNmXAheU0fg=","subType":"00"}}},"txnNumber":{"$numberLong":"1"},"op":"i","ns":"test4.vast","ui":{"$binary":{"base64":"2sMxOnWpS/6Rfw83Wx38ZQ==","subType":"04"}},"o":{"_id":{"$oid":"675faa0d99c306e24cfe6911"},"d":{"$numberInt":"1"}},"o2":{"_id":{"$oid":"675faa0d99c306e24cfe6911"}},"stmtId":{"$numberInt":"0"},"ts":{"$timestamp":{"t":1734322701,"i":2}},"t":{"$numberLong":"43"},"v":{"$numberLong":"2"},"wall":{"$date":{"$numberLong":"1734322701337"}},"prevOpTime":{"ts":{"$timestamp":{"t":0,"i":0}},"t":{"$numberLong":"-1"}}}
+```
+
+现在增量恢复这条数据:
+
+```bash
+$ mongorestore  -u root   -p 123456   --host mongodb-sharded-shard0-data-0.mongodb-sharded-headless.mongodb-sharded.svc.cluster.local:27017 --authenticationDatabase admin  --oplogReplay --drop /tmp/local/
+2024-12-16T04:21:04.168+0000    preparing collections to restore from
+2024-12-16T04:21:04.168+0000    don't know what to do with file "/tmp/local/oplog.rs.bson", skipping...
+2024-12-16T04:21:04.168+0000    don't know what to do with file "/tmp/local/oplog.rs.metadata.json", skipping...
+2024-12-16T04:21:04.168+0000    Failed: no oplog file to replay; make sure you run mongodump with --oplog
+2024-12-16T04:21:04.168+0000    0 document(s) restored successfully. 0 document(s) failed to restore.
+```
+
+上面那个报错是bson无法识别, 执行下面这个操作即可:
+```bash
+$ mv /tmp/local/oplog.rs.metadata.json  /tmp/local/oplog.metadata.json
+$ mv /tmp/local/oplog.rs.bson /tmp/local/oplog.bson 
+$ mongorestore  -u root   -p 123456   --host mongodb-sharded-shard0-data-0.mongodb-sharded-headless.mongodb-sharded.svc.cluster.local:27017 --authenticationDatabase admin  --oplogReplay --drop /tmp/local
+$ mongodb-sharded-shard-0 [direct: primary] test4>  use test4
+switched to db test4
+$ mongodb-sharded-shard-0 [direct: primary] test4> db.vast.find()
+[ { _id: ObjectId('675faa0d99c306e24cfe6911'), d: 1 } ]
+```
+
+补充 - 如何获取 oplog 的起始时间:
+
+```bash
+$ rs.printReplicationInfo()
 actual oplog size
 '4047.9306640625 MB'
 ---
