@@ -1,6 +1,6 @@
 ---
 title: 'MongoDB备份与恢复实战(二)'
-tags: ['MongoDB', '高可用架构', '全量备份']
+tags: ['MongoDB', '高可用架构', '全量备份与恢复', '增量备份与恢复']
 categories: ['数据库', '理论', '备份与恢复', '分布式']
 series: ['MongoDB 知识汇总']
 author: ['zhu733756']
