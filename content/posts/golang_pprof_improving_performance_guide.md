@@ -277,6 +277,16 @@ $ go tool pprof -http=localhost:6061 http://localhost:6060/debug/pprof/heap
 
 ![golang pprof在线分析](/posts/golang_pprof/pprof.png)
 
+其实, pprof 还支持`diff`模式:
+
+```bash
+$ curl -s http://localhost:6060/debug/pprof/heap > before.heap
+$ curl -s http://localhost:6060/debug/pprof/heap > after.heap
+$ go tool pprof -http=localhost:8081 --base before.heap after.heap
+```
+
+也就是说, 我们就能对比出优化前后的的性能效果了。
+
 ## 小尾巴
 
 老花: 既然 pprof 能帮助我们找到内存泄漏，那我们又有哪些手段来提升程序内存和 cpu 性能? 不知道你有没有听说过对象复用? 下一期我们来一起学习下吧!
