@@ -1,6 +1,6 @@
 ---
 title: '性能提升秘籍：Golang对象池与复用技术，GC不再是瓶颈！'
-tags: ['pprof']
+tags: ['性能优化']
 categories: ['golang', '实战', '性能优化']
 series: ['Golang知识汇总']
 author: ['zhu733756']
