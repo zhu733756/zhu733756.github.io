@@ -161,7 +161,6 @@ writerConfig := kafka.WriterConfig{
 		BatchBytes:   kc.BatchBytes,
 		BatchTimeout: kc.BatchTimeout,
 		MaxAttempts:  kc.MaxRetryTimes,
-
 		WriteTimeout: kc.WriteTimeout,
 		RequiredAcks: kc.RequiredAcks,
 }
@@ -179,7 +178,7 @@ writerConfig := kafka.WriterConfig{
 readConfig := kafka.ReaderConfig{
 		Topic:                 topic,
 		Brokers:               []string{"localhost:9092", "localhost:9093", "localhost:9094"},
-    GroupID:               "consumer-group-id",
+		GroupID:               "consumer-group-id",
 		StartOffset:           kc.StartOffset,
 		QueueCapacity:         kc.QueueCapacity,
 		MinBytes:              kc.MinM * 1024 * 1024,
@@ -537,9 +536,11 @@ func (ptw *partitionWriter) awaitBatch(batch *writeBatch) {
 
 总结一句, `WriteMessages` 是支持多携程并发的, 每个 `partitionWriter` 都维护一个 `batch`, 当 `batch` 满时, 会 `flush` 到 `kafka`, 为了提高性能, 我们可以使用多个发送者来共享这个`writer`。
 
+![kafka-go-batch-write](/posts/golang_kafka_batch_write/batch_write.png)
+
 ## 后记
 
 1. `github.com/segmentio/kafka-go` 是一个纯 `Go` 语言实现的 `Kafka` 客户端库, 操作简单, 支持`context`。
 2. `github.com/segmentio/kafka-go` 不支持幂等和事务, 需要结合业务自行实现。
-3. `WriteMessages`是支持多携程的, 可以看成一个长链接, 可以用多个 producer 一起共享, 注意结合一些参数来调优性能。
+3. `WriteMessages`是支持多携程的, 可以看成一个长链接, 可以用多个 `Sender` 一起共享, 注意结合一些参数来调优性能。
 4. 消费消息的时候, 可以结合一些参数来调优性能。
