@@ -213,6 +213,7 @@ $ mkdir models
 $ mv qwen1_5-0_5b-chat-q8_0.gguf models/
 $ ls
 bin  lib  ModelFile  models  ollama-linux-amd64.tgz  scripts
+
 $ cat scripts/start.sh
 #!/bin/bash
 
@@ -282,7 +283,7 @@ $ ollama run qwen:5b
 
 ```
 
-### 一些有用的其他命令汇总
+### 一些有用的命令汇总
 
 - **创建模型**: `ollama create <model_name> -f <path_to_Modelfile>`
 - **拉取模型**: `ollama pull <model_name>`
@@ -296,7 +297,7 @@ $ ollama run qwen:5b
 - **传递提示作为参数**: `ollama run <model_name> "<prompt>"`
 - **显示模型信息**: `ollama info <model_name>`
 - **列出计算机上的模型**: `ollama list`
-- **列出当前加载的模型**: `ollama loaded`
+- **列出模型的modelfile中的信息**: `ollama show <model_name> --<flag>`
 - **停止正在运行的模型**: `ollama stop <model_name>`
 - **启动 Ollama 服务**: `ollama serve`
 - **生成响应**: `curl http://localhost:11434/api/generate -d '{ "model": "llama3.2", "prompt": "Why is the sky blue?" }'`
@@ -305,4 +306,4 @@ $ ollama run qwen:5b
 ## 小尾巴
 
 1. [ollama](https://ollama.com/)是一个开源的 `LLM` 服务器, 支持离线部署的体验真是丝滑如德芙。
-2. 下期我们搞个 `webui` 体验下如何部署私有知识库, 随便把我们之前的 `mongodb` 文档给喂进去看看。
+2. 下期我们搞个 `webui` 体验下如何部署私有知识库, 顺便把我们之前的 `mongodb` 文档给喂进去看看。
