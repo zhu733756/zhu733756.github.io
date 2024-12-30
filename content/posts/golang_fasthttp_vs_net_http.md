@@ -412,32 +412,9 @@ func (wp *workerPool) getCh() *workerChan {
 
 3. 工作池关闭
 
-#### 官方推荐的性能优化
+#### 官方推荐的一些细节性能优化摘录
 
-- 不要随意分配对象和[]byte, 尽可能地重用它们。
-- sync.Pool 是你最好的朋友。
-- 在生产环境中对程序进行性能分析。通常，`go tool pprof --alloc_objects your-program mem.pprof` 比 `go tool pprof your-program cpu.pprof` 更能提供优化机会的洞察。
-- 为热点路径编写测试和基准测试。
-- 避免在[]byte 和 string 之间进行转换，因为这可能导致内存分配+复制。
-- 定期在竞态检测器下验证你的测试和生产代码。
-- 在你的 web 服务器中，优先使用 quicktemplate 而不是 html/template。
-
-1. 标准 Go 函数接受 nil 缓冲区
-
-```go
-var (
-	// 两个缓冲区都未初始化
-	dst []byte
-	src []byte
-)
-dst = append(dst, src...)  // 如果dst和/或src为nil，则合法
-copy(dst, src)  // 如果dst和/或src为nil，则合法
-(string(src) == "")  // 如果src为nil，则为真
-(len(src) == 0)  // 如果src为nil，则为真
-src = src[:0]  // 对于nil src也有效
-```
-
-推荐使用`srcLen := len(src)`, 而不是:
+- 推荐使用`srcLen := len(src)`, 而不是:
 
 ```go
 srcLen := 0
@@ -446,13 +423,7 @@ if src != nil {
 }
 ```
 
-2. 可以使用 append 将字符串追加到[]byte 缓冲区
-
-```go
-dst = append(dst, "foobar"...)
-```
-
-3. []byte 缓冲区可以扩展到其容量。
+2. []byte 缓冲区可以扩展到其容量。
 
 ```go
 buf := make([]byte, 100)
@@ -460,14 +431,7 @@ a := buf[:10]  // len(a) == 10, cap(a) == 100.
 b := a[:100]  // 由于cap(a) == 100，这是有效的。
 ```
 
-4. 所有 fasthttp 函数都接受 nil
-
-```go
-statusCode, body, err := fasthttp.Get(nil, "http://google.com/")
-uintBuf := fasthttp.AppendUint(nil, 1234)
-```
-
-5. 字符串和[]byte 缓冲区可以在不进行内存分配的情况下转换
+3. 字符串和[]byte 缓冲区可以在不进行内存分配的情况下转换
 
 ```go
 func b2s(b []byte) string {
