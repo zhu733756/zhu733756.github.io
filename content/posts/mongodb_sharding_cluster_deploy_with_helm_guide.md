@@ -162,7 +162,7 @@ mongodb-sharded-shard1-data-2            1/1     Running   0          3m59s
 老花：你可以通过连接到 `Mongos Pod` 来测试集群：
 
 ```bash
- kubectl exec -it mongodb-sharded-mongos-9cffc5c76-k7ps2  -n mongodb-sharded bash --  mongosh admin -u root -p 123456
+$ kubectl exec -it mongodb-sharded-mongos-9cffc5c76-k7ps2  -n mongodb-sharded bash --  mongosh admin -u root -p 123456
 Current Mongosh Log ID: 6747ca1e1c6d17dd2dfe6910
 Connecting to:          mongodb://<credentials>@127.0.0.1:27017/admin?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.2
 Using MongoDB:          8.0.3
