@@ -13,11 +13,11 @@ date: 2025-01-06T09:52:16+08:00
 
 ## milvus
 
-Milvus 构建在 Faiss、HNSW、DiskANN、SCANN 等流行的向量搜索库之上，专为在包含数百万、数十亿甚至数万亿向量的密集向量数据集上进行相似性搜索而设计。
+Milvus 构建在 Faiss、HNSW、DiskANN、SCANN 等流行的向量搜索库之上, 专为在包含数百万、数十亿甚至数万亿向量的密集向量数据集上进行相似性搜索而设计。
 
 支持数据分片、流式数据摄取、动态 Schema、结合向量和标量数据的搜索、多向量和混合搜索、稀疏向量和其他许多高级功能。
 
-采用共享存储架构，其计算节点具有存储和计算分解及横向扩展能力。
+采用共享存储架构, 其计算节点具有存储和计算分解及横向扩展能力。
 
 > 官方建议使用 Kubernetes 部署 Milvus。
 
@@ -244,31 +244,37 @@ my-release-pulsar-zookeeper   3/3     2d15h
 
 ![架构图](https://milvus.io/docs/v2.5.x/assets/milvus_architecture.png)
 
-根据该图，接口可分为以下几类：
+根据该图, 接口可分为以下几类:
 
-- DDL / DCL：createCollection / createPartition / dropCollection / dropPartition / hasCollection / hasPartition
-- DML / Produce：插入 / 删除 / 上移
-- DQL:搜索/查询
+- DDL / DCL: createCollection / createPartition / dropCollection / dropPartition / hasCollection / hasPartition
+- DML / Produce: 插入 / 删除 / 上移
+- DQL: 搜索/查询
 
-由此看来, `milvus`的设计是存算分离, 支持流式计算, 交互过程如下:
+### 交互过程
+
+`milvus`的设计是存算分离, 具体交互过程如下:
 
 ![milvus](/posts/llm_milvus/milvus.png)
 
-- 客户端：发起请求，与 Milvus 系统交互的起点。
-- 访问层：作为系统的前端层，接收客户端请求并转发给协调器服务。同时，它还负责将协调器服务返回的最终结果返回给客户端。
-- 协调器服务：系统的大脑，负责任务分配和管理。它接收访问层转发的请求，将任务分配给工作节点，并收集工作节点返回的结果，经过聚合处理后返回给访问层。
-- 工作节点：执行具体的任务，包括数据操作和索引构建等。它与存储层交互，执行数据操作并将结果返回给协调器服务。
-- 存储层：负责数据的持久化存储。它接收工作节点的数据操作请求，执行存储操作，并将结果返回给工作节点。
+- 客户端: 发起请求, 向 Milvus 系统发起请求。
+- 访问层: 作为系统的前端层, 接收客户端请求并转发给协调器服务。同时, 它还负责将协调器服务返回的最终结果返回给客户端。
+- 协调器服务: 系统的大脑, 负责任务分配和管理。它接收访问层转发的请求, 将任务分配给工作节点, 并收集工作节点返回的结果, 经过聚合处理后返回给访问层。
+- 工作节点: 执行具体的任务, 包括数据操作和索引构建等。它与存储层交互, 执行数据操作并将结果返回给协调器服务。
+- 存储层: 负责数据的持久化存储。它接收工作节点的数据操作请求, 执行存储操作, 并将结果返回给工作节点。
 
-在这个系统中，数据节点负责数据的持久性，并最终将其存储在 `MinIO/S3` 等分布式对象存储中。查询节点负责处理搜索等计算任务。
+在这个系统中, 查询节点负责处理搜索等计算任务, 数据节点负责数据的持久性, 并最终将其存储在 `MinIO/S3` 等分布式对象存储中。
 
-### 消息存储
+不知道你有没有注意, 这个系统设计和`loki stack`有些相似, 它也分为协调服务/查询节点/数据节点/对象存储等, 可能优秀的架构都是差不多的吧, 差异在细节和产品特色上。 
+
+### 存储层
+
+#### 消息存储
 
 `Milvus` 默认使用 `Pulsar` 作为消息存储, 还支持`Kafka`和`RocksMQ`:
 
 > https://github.com/zilliztech/milvus-operator/blob/main/docs/administration/manage-dependencies/message-storage.md
 
-### 元数据存储
+#### 元数据存储
 
 `Milvus` 使用 `etcd` 作为元数据存储, 并且计划支持`mysql`
 
@@ -295,7 +301,7 @@ spec:
         - 192.168.1.1:2379
 ```
 
-### 对象存储
+#### 对象存储
 
 `Milvus` 使用 `minio` 或者`s3` 保存索引和二进制文件, 与`etcd`类似, 支持自建集群`inCluster`, 和外部集群`external`:
 
@@ -339,25 +345,25 @@ spec:
 
 ### 一致性
 
-根据`CAP`理论, 分布式系统在设计和实现时需要在三个关键属性之间做出权衡：一致性（Consistency）、可用性（Availability）和分区容忍性（Partition tolerance）:
+根据`CAP`理论, 分布式系统在设计和实现时需要在三个关键属性之间做出权衡: 一致性(Consistency)、可用性(Availability)和分区容忍性(Partition tolerance):
 
-- CA（Consistency and Availability）：如果一个系统选择了一致性和可用性，那么它必须在网络分区发生时牺牲分区容忍性;
-- CP（Consistency and Partition tolerance）：如果一个系统选择了一致性和分区容忍性，那么它在网络分区发生时可能无法保证可用性;
-- AP（Availability and Partition tolerance）：如果一个系统选择了可用性和分区容忍性，那么它在网络分区发生时可能会牺牲一致性;
+- CA(Consistency and Availability): 如果一个系统选择了一致性和可用性, 那么它必须在网络分区发生时牺牲分区容忍性;
+- CP(Consistency and Partition tolerance): 如果一个系统选择了一致性和分区容忍性, 那么它在网络分区发生时可能无法保证可用性;
+- AP(Availability and Partition tolerance): 如果一个系统选择了可用性和分区容忍性, 那么它在网络分区发生时可能会牺牲一致性;
 
-> 批处理数据可以理解为已经存储在对象存储中的数据，而流式数据指的是尚未存储在对象存储中的数据。由于网络延迟，查询节点通常无法保存最新的流数据。
+> 批处理数据可以理解为已经存储在对象存储中的数据, 而流式数据指的是尚未存储在对象存储中的数据。由于网络延迟, 查询节点通常无法保存最新的流数据。
 
-为了解决这个问题，`Milvus` 对数据队列中的每条记录都打上时间戳，并不断向数据队列中插入同步时间戳。每当收到同步时间戳（`syncTs`），`QueryNodes` 就会将其设置为服务时间，这意味着 `QueryNodes` 可以查看该服务时间之前的所有数据。基于 `ServiceTime`，`Milvus` 可以提供保证时间戳（`GuaranteeTs`），以满足用户对一致性和可用性的不同要求。
+为了解决这个问题, `Milvus` 对数据队列中的每条记录都打上时间戳, 并不断向数据队列中插入同步时间戳。每当收到同步时间戳(`syncTs`), `QueryNodes` 就会将其设置为服务时间, 这意味着 `QueryNodes` 可以查看该服务时间之前的所有数据。基于 `ServiceTime`, `Milvus` 可以提供保证时间戳(`GuaranteeTs`), 以满足用户对一致性和可用性的不同要求。
 
-一致性级别具体有以下几种，以确保每个节点或副本在读写操作期间都能访问相同的数据:
+一致性级别具体有以下几种, 以确保每个节点或副本在读写操作期间都能访问相同的数据:
 
-- Strong: 使用最新的时间戳作为 GuaranteeTs，查询节点必须等到服务时间满足 GuaranteeTs 后才能执行搜索请求。
+- Strong: 使用最新的时间戳作为 GuaranteeTs, 查询节点必须等到服务时间满足 GuaranteeTs 后才能执行搜索请求。
 
-- Eventually: GuaranteeTs 设置为极小值（如 1），以避免一致性检查，这样查询节点就可以立即对所有批次数据执行搜索请求。
+- Eventually: GuaranteeTs 设置为极小值(如 1), 以避免一致性检查, 这样查询节点就可以立即对所有批次数据执行搜索请求。
 
-- Bounded: GuranteeTs 设置为早于最新时间戳的时间点，以便查询节点在执行搜索时能容忍一定的数据丢失。
+- Bounded: GuranteeTs 设置为早于最新时间戳的时间点, 以便查询节点在执行搜索时能容忍一定的数据丢失。
 
-- Session: 客户端插入数据的最新时间点被用作 GuaranteeTs，这样查询节点就能对客户端插入的所有数据执行搜索。
+- Session: 客户端插入数据的最新时间点被用作 GuaranteeTs, 这样查询节点就能对客户端插入的所有数据执行搜索。
 
 ## 测试集群
 
