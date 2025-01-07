@@ -238,7 +238,7 @@ my-release-pulsar-recovery    1/1     2d15h
 my-release-pulsar-zookeeper   3/3     2d15h
 ```
 
-上面的注释只是管中窥豹, 下面我们走读下官方文档:
+上面的注释只是管中窥豹, 下面我们走读下官方文档。
 
 ### 架构图
 
