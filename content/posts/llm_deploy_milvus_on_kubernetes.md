@@ -9,21 +9,21 @@ date: 2025-01-06T09:52:16+08:00
 
 ## 前戏
 
-> AI 过去两年大火, 向量数据库 milvus 大火, 这玩意怎么在 k8s 上部署?
+> 过去两年 AI 大火, 向量数据库 milvus 赋能 RAG 向量搜索加速, 这玩意怎么在 k8s 上部署?
 
 ## milvus
 
-Milvus 构建在 Faiss、HNSW、DiskANN、SCANN 等流行的向量搜索库之上, 专为在包含数百万、数十亿甚至数万亿向量的密集向量数据集上进行相似性搜索而设计。
+`Milvus` 构建在 `Faiss`、`HNSW`、`DiskANN`、`SCANN` 等流行的向量搜索库之上, 专为在包含数百万、数十亿甚至数万亿向量的密集向量数据集上进行相似性搜索而设计。
 
-支持数据分片、流式数据摄取、动态 Schema、结合向量和标量数据的搜索、多向量和混合搜索、稀疏向量和其他许多高级功能。
+支持数据分片、流式数据摄取、动态`Schema`、结合向量和标量数据的搜索、多向量和混合搜索、稀疏向量和其他许多高级功能。
 
 采用共享存储架构, 其计算节点具有存储和计算分解及横向扩展能力。
 
 > 官方建议使用 Kubernetes 部署 Milvus。
 
-> 首先, 你要有一个`k8s`测试集群, 可以使用`kind`或者`minikube`来进行创建。然后, 我们可以用 `helm` 部署 `milvus`应用包。
-
 ## 创建集群
+
+> 本文使用 kind 来部署 k8s 集群。
 
 ### 下载 kind 和 helm
 
@@ -97,7 +97,7 @@ aac79b39a00e   kindest/node:v1.25.3   "/usr/local/bin/entr…"   3 minutes ago  
 1a67a1f15d5e   kindest/node:v1.25.3   "/usr/local/bin/entr…"   3 minutes ago   Up 3 minutes                                                         milvus-cluster-worker2
 ```
 
-## helm 包
+## helm 应用包
 
 > https://github.com/zilliztech/milvus-operator/tree/main/charts/milvus-operator
 
@@ -143,13 +143,15 @@ resources:
 
 ### 安装 operator
 
+`milvus-operator` watch 自定义资源的定义, 用来创建 `Milvus` 实例。
+
 ```bash
 helm repo add milvus-operator https://zilliztech.github.io/milvus-operator/
 helm repo update milvus-operator
 helm -n milvus-operator upgrade --install --create-namespace milvus-operator milvus-operator/milvus-operator
 ```
 
-前文提到过, 我们使用的是`kind`, 也就是`k8s in docker`, 需要把镜像导入到`kind`集群中:
+由于我们使用的是`kind`, 也就是`k8s in docker`, 需要把镜像导入到`kind`集群中:
 
 ```bash
 $ docker pull milvusdb/milvus-operator:v1.1.4
@@ -161,13 +163,17 @@ milvus-operator-549848966d-8pqn6   1/1     Running   0          9m40s
 
 ### 部署 milvus 实例
 
+这里有各种场景下的`Milvus CR`:
+
 > https://github.com/zilliztech/milvus-operator/blob/main/config/samples/
+
+我们使用这个部署测试集群:
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/zilliztech/milvus-operator/main/config/samples/milvus_v1alpha1_milvus.yaml
 ```
 
-理论上, 你能得到一堆镜像拉取不成功的 `pod`, 现在我们讲这些拉去失败的镜像去重列举出来:
+理论上, 你能得到一堆镜像拉取不成功的 `pod`, 你可以像我这样, 把这些拉去失败的镜像去重列举出来:
 
 ```bash
 $ kubectl get po -oyaml |grep image: | awk -F": " '{print $2}' | sort | uniq  -c
@@ -176,7 +182,7 @@ $ kubectl get po -oyaml |grep image: | awk -F": " '{print $2}' | sort | uniq  -c
       8 minio/minio:RELEASE.2023-03-20T20-16-18Z
 ```
 
-需要使用 `kind` 将这些镜像导入到集群中:
+需要使用 `kind` 将这些镜像导入到集群中, 就可以让 `milvus-operator`运行起来:
 
 ```bash
 $ docker pull apachepulsar/pulsar:2.9.5
@@ -189,7 +195,7 @@ $ docker pull  minio/minio:RELEASE.2023-03-20T20-16-18Z
 $ kind load docker-image minio/minio:RELEASE.2023-03-20T20-16-18Z --name milvus-cluster
 ```
 
-执行 `kubectl get po`还是有拉取失败的`pod`, 主要是因为是因为我们部署了一个实例, 实例的镜像没有拉取, 问题不大, 我们继续导入镜像:
+导入成功后, 执行 `kubectl get po`还是有拉取失败的`pod`, 主要是因为是因为我们部署了一个实例, 实例的镜像没有拉取, 问题不大, 我们继续导入镜像:
 
 ```bash
 $ kubectl get po  |grep ImagePullBackOff| awk '{print $1}' |xargs -I {} kubectl get po {} -oyaml  | grep image:| awk -F": " '{print
@@ -203,7 +209,9 @@ $ docker pull milvusdb/milvus:v2.4.17
 $ kind load docker-image milvusdb/milvus:v2.4.17 --name milvus-cluster
 ```
 
-> 上面的脚本, 实际部署中可能要加上 namespace 的参数, 例如: kubectl get po -n <ns>
+这样的话, `milvus` 就可以正常启动了。
+
+> 上面的脚本, 实际部署中可能要加上 namespace 的参数, 例如: `kubectl get po -n your-ns`
 
 ## milvus 实例架构分析
 
@@ -264,7 +272,7 @@ my-release-pulsar-zookeeper   3/3     2d15h
 
 在这个系统中, 查询节点负责处理搜索等计算任务, 数据节点负责数据的持久性, 并最终将其存储在 `MinIO/S3` 等分布式对象存储中。
 
-不知道你有没有注意, 这个系统设计和`loki stack`有些相似, 它也分为协调服务/查询节点/数据节点/对象存储等, 可能优秀的架构都是差不多的吧, 差异在细节和产品特色上。 
+不知道你有没有注意, 这个系统设计和`loki stack`有些相似, 它也分为协调服务/查询节点/数据节点/对象存储等, 可能优秀的架构都是差不多的吧, 差异在细节和产品特色上。
 
 ### 存储层
 
@@ -420,13 +428,13 @@ $ curl localhost:31000
 这个自动生成样例数据导入的功能很 nice:
 ![import](/posts/llm_milvus/import.png)
 
-构建 cosine 索引:
+构建一个 cosine 索引:
 ![index](/posts/llm_milvus/index.png)
 
 加载集合:
 ![load_ui](/posts/llm_milvus/load.png)
 
-然后你就可以搜索, 玩耍了~
+更多功能, 请自行体验玩耍~
 
 ### 通过暴露实例 service 访问集群
 
