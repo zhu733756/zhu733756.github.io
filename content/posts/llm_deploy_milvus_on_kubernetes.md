@@ -449,7 +449,7 @@ proxy:
 $ curl localhost:31000
 ```
 
-看了下源码似乎不支持自己指定`nodePort`为`31000`, 如果手动修改 service, 发现很快就被`operator `调协回去了, 只能随机选择:
+看了下源码似乎不支持自定义`nodePort`为`31000`, 如果手动修改 `service`, 发现很快就被`operator `调协回去了, 只能随机选择:
 
 ![nodeport](/posts/llm_milvus/nodeport.png)
 
@@ -489,8 +489,9 @@ pip install pymilvus
 {'collection_name': 'testcollection', 'auto_id': True, 'num_shards': 1, 'description': '', 'fields': [{'field_id': 100, 'name': 'id', 'description': '', 'type': <DataType.INT64: 5>, 'params': {}, 'auto_id': True, 'is_primary': True}, {'field_id': 101, 'name': 'vector', 'description': '', 'type': <DataType.FLOAT_VECTOR: 101>, 'params': {'dim': 128}}, {'field_id': 102, 'name': 'color', 'description': '', 'type': <DataType.VARCHAR: 21>, 'params': {'max_length': 128}, 'is_partition_key': True}], 'functions': [], 'aliases': [], 'collection_id': 455116632365614380, 'consistency_level': 1, 'properties': {}, 'num_partitions': 16, 'enable_dynamic_field': True}
 
 >>> client.get(collection_name="testcollection",ids=[455116632364191056],output_fields=["color"])
-
 ```
+
+> 执行上面的脚本, 需要你在 test 数据库中创建一个名为 testcollection 的集合, 并且在集合中插入一些数据, 并保证有一些数据和索引, 并进行了数据加载, 你可以在 ui 部分操作这一步骤
 
 ## 小尾巴
 
