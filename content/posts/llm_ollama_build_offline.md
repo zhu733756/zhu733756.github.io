@@ -297,7 +297,7 @@ $ ollama run qwen:5b
 - **传递提示作为参数**: `ollama run <model_name> "<prompt>"`
 - **显示模型信息**: `ollama info <model_name>`
 - **列出计算机上的模型**: `ollama list`
-- **列出模型的modelfile中的信息**: `ollama show <model_name> --<flag>`
+- **列出模型的 modelfile 中的信息**: `ollama show <model_name> --<flag>`
 - **停止正在运行的模型**: `ollama stop <model_name>`
 - **启动 Ollama 服务**: `ollama serve`
 - **生成响应**: `curl http://localhost:11434/api/generate -d '{ "model": "llama3.2", "prompt": "Why is the sky blue?" }'`
