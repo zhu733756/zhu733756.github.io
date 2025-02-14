@@ -86,25 +86,78 @@ chmod u+x one-api
 
 ## 本地大模型 deepseek-r1 7b 实战
 
-### 下载 ollama
+### ollama 配置远程启动
 
 > https://ollama.com/
-
-### 安装 deepseek-r1:7b
 
 设置环境变量运行远程访问:
 
 ```bash
-$ launchctl setenv OLLAMA_HOST "0.0.0.0"
-$ launchctl setenv OLLAMA_ORIGINS "*"
-$ ollama run deepseek-r1:7b
+$ export OLLAMA_HOST="0.0.0.0"
+$ export OLLAMA_ORIGINS="*"
+```
+
+如果你使用的是 mac 桌面应用, 可能比较复杂, 需要通过编写以下脚本配置:
+
+```xml
+$ vim ~/Library/LaunchDaemons/setenv.OLLAMA.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>Label</key>
+        <string>setenv.OLLAMA</string>
+        <key>ProgramArguments</key>
+        <array>
+            <string>/bin/launchctl</string>
+            <string>setenv</string>
+            <string>OLLAMA_HOST</string>
+            <string>0.0.0.0</string>
+            <string>setenv</string>
+            <string>OLLAMA_ORIGINS</string>
+            <string>*</string>
+        </array>
+        <key>RunAtLoad</key>
+        <true/>
+    </dict>
+</plist>
+```
+
+验证这个配置:
+
+```bash
+$ plutil -lint ~/Library/LaunchDaemons/setenv.OLLAMA.plist
+```
+
+检查 ollama 远程访问:
+
+```
+$ lsof -i:11434
+COMMAND  PID      USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+ollama  1100 zhu733756    3u  IPv6 0x106bee5e06039ff8      0t0  TCP *:11434 (LISTEN)
+
+```
+
+### 安装 deepseek-r1 7b
+
+```bash
+$ nohup ollama run deepseek-r1:7b > deepseek.log 2>&1 &
+$ ollama ps
+NAME              ID              SIZE      PROCESSOR    UNTIL
+deepseek-r1:7b    0a8c26691023    6.0 GB    100% GPU     4 minutes from now
 ```
 
 ### 配置令牌
 
-使用 `root/123456` 登录 `http://<host>:3000/`添加渠道和令牌:
+使用 `root/123456` 登录 `http://<oneapi-host>:3000/`添加渠道和令牌:
 
 ![channel](/posts/llm_api/oneapi-channel.png)
+
+如果你的`oneapi`使用`add-host`启动, 你可以配置为`http://host.docker.internal:11434`:
+
+```bash
+docker run --name one-api -d --restart always -p 3000:3000 --add-host host.docker.internal:host-gateway -e TZ=Asia/Shanghai -v /Applications/Docker-Home/oneapi/data:/data justsong/one-api:v0.6.10
+```
 
 可以点击测试, 然后使用下面的代码进行测试:
 
@@ -112,19 +165,19 @@ $ ollama run deepseek-r1:7b
 import openai
 
 # 设置您的 API 密钥
-openai.api_key = "sk-xxxx"
+openai.api_key = "sk-egz9pkKr3YDXTQCu1b0d4963Cd4f4a159f5e5d97E5Cd1065"
 
 # 设置自定义的 API 请求地址
-openai.api_base = "http://<one-api>:3000/v1"
+openai.api_base = "http://<oneapi-host>:3000/v1"
 
 # 设置对话的 prompt
 messages = [
     {"role": "system", "content": ""},
-    {"role": "user", "content": "1+1=？"}
+    {"role": "user", "content": "1+1=?"}
 ]
 # 使用 OpenAI API 进行聊天
 response = openai.ChatCompletion.create(
-    model="qwen:0.5b-chat-v1.5-q4_1",
+    model="deepseek-r1:7b",
     messages=messages,
     max_tokens=100,
     n=1,
@@ -135,6 +188,17 @@ response = openai.ChatCompletion.create(
 # 输出回复
 assistant_message = response.choices[0].message
 print(assistant_message.content)
+```
+
+运行代码:
+
+```bash
+$ python3 test.py
+<think>
+
+</think>
+
+1 + 1 = **2**.
 ```
 
 ## 小尾巴
