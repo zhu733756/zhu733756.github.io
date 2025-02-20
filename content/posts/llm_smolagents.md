@@ -292,7 +292,7 @@ print(agent_output)
 
 ### 4.自定义博客写作
 
-> https://github.com/samwit/smolagents_examples/blob/main/smol_blogwriter.py
+> https://github.com/zhu733756/cloud-database-tools/tree/master/llm/agents/smoleagents-examples
 
 ## 小尾巴
 
