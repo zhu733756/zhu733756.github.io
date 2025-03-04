@@ -13,7 +13,7 @@ series = "series"
 
 [params]
 env = "production"
-description = "zhu733756 | 学习、分享, 专注于云原生数据库领域"
+description = "zhu733756 | 学习、分享, 专注于云原生和大模型领域"
 author = "zhu733756"
 keywords = ["blog", "cloud native", "docker","kubernetes", "coding"]
 ShowShareButtons = true
@@ -40,7 +40,7 @@ appendFilePath = true
 [params.profileMode]
 enabled = true
 title = "zhu733756的博客"
-subtitle = "云原生数据库踩坑实战"
+subtitle = "云原生大模型踩坑实战"
 imageUrl = "/img/profile.jpeg"
 imageTitle = "coding"
 
